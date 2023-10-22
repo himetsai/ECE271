@@ -156,7 +156,7 @@ $L[g(x), y] = \begin{cases}
   1, &g(x) \neq y \\
   0, &g(x) = y
 \end{cases}$. 
-By the maximum a-posteriori probability rule, the optimal decision function
+By the minimum probability of error rule, the optimal decision function is
 \begin{align*}
   g^*(x) 
   &= {\arg \max}_{i} \prob_{Y|X}(i | x) \\
@@ -170,8 +170,8 @@ By the maximum a-posteriori probability rule, the optimal decision function
     grass, &\text{otherwise},
   \end{cases}
 \end{align*}
-for the 0-1 loss function. We then use function $g*(x)$ to assign a state to each pixel and obtian 
-our pridiction mask array $A$.
+for the 0-1 loss function. We then use function $g^*(x)$ to assign a state to each pixel and obtian 
+our pridiction mask array $A$. Resulting picture of array $A$ is shown at the bottom of the page.
 
 \section*{Part D}
 
@@ -179,9 +179,13 @@ The array $A$ contains a mask that indicates which blocks contain grass and whic
 cheetah. Compare it with the ground truth provided in image {\fontfamily{qcr}\selectfont cheetah\textunderscore mask.bmp} and compute the probability of error of your algorithm. \\
 
 \textbf{\large Solution}
-
+By comparing our prediction with the truth, we calculate the error rate with the following formula
+\[
+  \text{Error rate} = \frac{\text{number of pixels of different values}}{\text{number of pixels}}.
+\]
+Results shown in the following figure.
 \begin{center}
-  \includegraphics[scale=0.13]{comparison}
+  \includegraphics[scale=0.1]{comparison}
 \end{center}
 
 \section*{MATLAB Code}

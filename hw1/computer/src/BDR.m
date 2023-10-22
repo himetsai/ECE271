@@ -76,13 +76,19 @@ for r = 1:row_TG
     end
 end
 
-subplot(1, 2, 1);
+subplot(1, 3, 1);
+imagesc(target);
+axis off
+colormap("gray");
+axis equal tight;
+
+subplot(1, 3, 2);
 imagesc(mask);
 axis off
 colormap(gray(255));
 axis equal tight;
 
-subplot(1, 2, 2);
+subplot(1, 3, 3);
 imagesc(A);
 axis off
 colormap(gray(255));
