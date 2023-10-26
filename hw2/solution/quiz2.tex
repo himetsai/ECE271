@@ -135,7 +135,16 @@ Then,
 \end{gather*}
 For $1 \leq j \leq N$, we get $\frac{c_j}{\pi_j} + \lambda = 0$, and so $c_j + \pi_j\lambda = 0$. 
 Then, $\sum^N_{j = 1} (c_j + \pi_j\lambda) = n + \lambda = 0$, and thus $ \lambda = -n$. 
-Therefore, we obtain the ML estamator $\theta^* = \left(\frac{c_1}{n},\dots, \frac{c_N}{n}\right)$, where $n$ is the total sample size and $c_j$ is the count for class $j$ from the sample.
+We also take the Hessian of $L$. Notice that 
+\[
+    \frac{\partial^2 L}{\partial \pi_i \partial \pi_j} = \begin{cases}
+        -\frac{c_j}{\pi_j^2}, & i = j \\
+        0, & i \neq j
+    \end{cases},
+\]
+and so $\nabla^2_{\theta} L = \text{diag}\left(-\frac{c_i}{\pi_i^2}, \dots, -\frac{c_N}{\pi_N^2}\right)$.
+Since the Hessian of $L$ is obviously negative definite, the critical point we are looking for is indeed a maximum point.
+Therefore, we obtain the ML estamator $\theta^* = \left(\frac{c_1}{n},\dots, \frac{c_N}{n}\right)$.
 
 In the case of {\fontfamily{qcr}\selectfont TrainingSampleDCT\textunderscore8.mat}, there are two classes in total, with $250$ samples of class \textit{cheetah} and $1053$ samples of class \textit{grass}.
 By our ML estamator, we get
