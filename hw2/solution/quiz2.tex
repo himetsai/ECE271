@@ -211,6 +211,8 @@ In other words, we have filtered out the features that possibly possess high bay
 
 \section*{MATLAB Code}
 
+\textbf{\large main.m}
+
 \begin{lstlisting}[language=Matlab]
 load('../dataset/TrainingSamplesDCT_8.mat');
 zigzag = load('../dataset/Zig-Zag Pattern.txt');
@@ -236,7 +238,6 @@ threshold = prior_FG / prior_BG;
 
 mean_FG = zeros(1, 64);
 mean_BG = zeros(1, 64);
-
 cov_FG = zeros(64, 64);
 cov_BG = zeros(64, 64);
 
@@ -252,10 +253,8 @@ end
 
 mean_FG = mean_FG / row_FG;
 mean_BG = mean_BG / row_BG;
-
 cov_FG = (cov_FG / row_FG) - mean_FG' * mean_FG;
 cov_BG = (cov_BG / row_BG) - mean_BG' * mean_BG;
-
 
 figure;
 
@@ -322,7 +321,6 @@ end
 
 mean8_FG = zeros(1, 8);
 mean8_BG = zeros(1, 8);
-
 cov8_FG = zeros(8, 8);
 cov8_BG = zeros(8, 8);
 
@@ -340,7 +338,6 @@ end
 
 mean8_FG = mean8_FG / row_FG;
 mean8_BG = mean8_BG / row_BG;
-
 cov8_FG = (cov8_FG / row_FG) - mean8_FG' * mean8_FG;
 cov8_BG = (cov8_BG / row_BG) - mean8_BG' * mean8_BG;
 
@@ -402,6 +399,17 @@ error_rate64 = error64 / (row_TG * col_TG);
 error_rate8 = error8 / (row_TG * col_TG);
 disp(error_rate64);
 disp(error_rate8);
+\end{lstlisting}
+
+\textbf{\large mvn.m}
+
+\begin{lstlisting}
+function result = mvn(x, mean, cov)
+  [~, dim] = size(mean);
+  d = (x - mean) * inv(cov) * (x - mean)';
+  c = 1/sqrt((2 * pi)^dim * det(cov));
+  result = c * exp(-0.5 * d);
+end
 \end{lstlisting}
 
 \end{document}
