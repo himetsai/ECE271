@@ -1,0 +1,244 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{enumitem}
+\usepackage{cancel}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\textsc{\hmwkHeader}}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+\setlength{\parskip}{5pt}
+
+\newenvironment{topic}[1]{\subsection*{#1}}{}
+\newenvironment{lemma}[1]{\subsection*{Lemma #1.}}{}
+\newenvironment{defn}{\subsection*{Definition.}}{}
+\newenvironment{defnlemma}[1]{\subsection*{Definition-Lemma #1.}}{}
+\newenvironment{corollary}[1]{
+    \def\temp{#1}\def\null{&}\ifx\temp\null
+        \subsection*{Corollary.}
+    \else
+        \subsection*{Corollary #1.}
+    \fi
+    
+}{}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+
+\newcommand{\hmwkInstitution}{University of California San Diego}
+\newcommand{\hmwkTitle}{\textsc{ECE 271A Midterm Reference Sheet}}
+\newcommand{\hmwkHeader}{Midterm Reference Sheet}
+\newcommand{\hmwkInstructor}{Prof. Nuno Vasconcelos}
+\newcommand{\hmwkAuthorName}{Ray Tsai}
+
+%
+% Title Page
+%
+\title{
+    \vspace{2in}
+    \textsc{\Large\hmwkInstitution} \\
+    \vspace{0.2in}
+    \textmd{\textbf{\hmwkTitle}}\\
+    \vspace{0.2in}\large{Instructor: \textit{\hmwkInstructor}}
+}
+
+\author{
+  Organized by \hmwkAuthorName
+}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+\newcommand*{\Z}{\mathbb{Z}}
+\newcommand*{\Q}{\mathbb{Q}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\C}{\mathbb{C}}
+\newcommand*{\N}{\mathbb{N}}
+\newcommand*{\prob}{\mathds{P}}
+\newcommand*{\E}{\mathds{E}}
+
+\begin{document}
+
+
+\maketitle
+
+\thispagestyle{empty}
+\clearpage
+\pagenumbering{arabic} 
+
+\pagebreak
+
+\rhead{ECE 271A}
+
+% \begin{center}
+%     \section*{\\ Bayesian Decision Theory}
+% \end{center}
+
+% \vspace{0.2in}
+
+
+\begin{topic}{Bayes Decision Rule}
+    \begin{align*}
+        g^*(x) 
+        &= \underset{g(x)}{\arg \min} \, \sum_i P_{Y|X}(i|x)L[g(x), i] \\
+        &= \underset{i}{\arg \max} \, P_{Y|X}(i|x) && \text{(for 0-1 loss function)} \\
+        &= \underset{i}{\arg \max} \, P_{X|Y}(x|i)P_Y(i) && \text{(for 0-1 loss function)} \\
+        &= \underset{i}{\arg \max} \, \ln P_{X|Y}(x|i) + \ln P_Y(i). && \text{(for 0-1 loss function)}
+    \end{align*}
+    
+    For binary classification, the likelihood ratio form is: pick $0$ if $\frac{P_{X|Y}(x|0)}{P_{X|Y}(x|1)} > T^* = \frac{P_Y(1)}{P_X(0)}$.
+\end{topic}
+
+\begin{topic}{Associated Risk}
+    \[
+        R^* = \int P_X(x) \sum_{i \neq g^*(x)} P_{Y|X}(i|x) dx = \int P_{Y,X}(y \neq g^*(x), x) dx \quad \text{(For 0-1 loss function)}
+    \]
+\end{topic}
+
+\begin{topic}{Gaussian Classifier}
+    For single variable, we assume $\sigma_i = \sigma$ and pick 0 if
+    \[
+        x < \frac{\mu_1 + \mu_0}{2} + \frac{1}{\frac{\mu_1 - \mu_0}{\sigma^2}}\ln \frac{P_Y(0)}{P_Y(1)}.
+    \]
+    Generalizing it to multiple variables, we assume $\Sigma_i = \Sigma$, then the BDR becomes
+    \[
+        i^*(x) = \underset{i}{\arg \min}[d(x, \mu_i) + \alpha_i],
+    \]
+    where $d(x, y) = (x - y)^T\Sigma^{-1}(x - y)$ and $\alpha_i = \cancel{\left[(2\pi)^d|\Sigma|\right]} - 2\ln P_Y(i)$.
+
+    Alternatively,
+    \[
+        i^*(x) = \underset{i}{\arg \max} \, g_i(x),
+    \]
+    where $g_i(x) = w_i^Tx + w_{i0}$, $w_i = \Sigma^{-1}\mu_i$, and $w_{i0} = -\frac{1}{2}\mu_i^T\Sigma^{-1}\mu_i + \ln P_Y(i)$.
+\end{topic}
+
+\begin{topic}{Geometric Interpretation}
+    Thus, the hyperplane between class $0$ and $1$ is 
+    \[
+        g_0(x) - g_1(x) = w^Tx + b = 0,
+    \]
+    where $w = \Sigma^{-1}(\mu_0 - \mu_1)$ and $b = -\frac{(\mu_0 + \mu_1)^T\Sigma^{-1}(\mu_0 - \mu_1)}{2} + \ln \frac{P_Y(0)}{P_Y(1)}$.
+
+    It could also be rewritten as
+    \[
+        w^T(x - x_0) = 0,
+    \]
+    where $w = \Sigma^{-1}(\mu_0 - \mu_1)$ and $x_0 = \frac{\mu_0 + \mu_1}{2} - \frac{1}{(\mu_0 - \mu_1)^T\Sigma^{-1}(\mu_0 - \mu_1)} \ln \frac{P_Y(0)}{P_Y(1)}(\mu_0 - \mu_1)$
+\end{topic}
+
+\begin{topic}{Gaussian Distribution Transformation}
+    Let $x \sim N(\mu, \Sigma)$, and let $y = A^Tx$, for some matrix $A$. Then, $y \sim N(A^T\mu, A^t\Sigma A)$. A special case of this is the whitening transform $A_w = \Phi\Lambda^{-1/2}$, where $\Phi$ is the matrix of orthonormal eigenvectors of $\Sigma$, and $\Lambda$ is the diagonal matrix of eigenvalues of $\Sigma$.
+\end{topic}
+
+\begin{topic}{Sigmoid}
+    Suppose that $g_1(x) = 1 - g_0(x)$. Then, we can rewrite
+    \[
+        g_0(x) = \frac{1}{1 + \frac{P_{X|Y}(x|1)P_Y(1)}{P_{X|Y}(x|0)P_Y(0)}} = \frac{1}{1 + \exp\{d_0(x, \mu_0) - d_1(x, \mu_1) + \alpha_0 - \alpha_1\}},
+    \]
+    where, $d(x, y) = (x - y)^T\Sigma^{-1}(x - y)$ and $\alpha_i = \ln \left[(2\pi)^d|\Sigma_i|\right] - 2\ln P_Y(i)$.
+\end{topic}
+
+\begin{topic}{Maximum Likelihood Estimation}
+    Solve for
+    \[
+        \Theta^* = \underset{\Theta}{\arg \max} \, P_X(D;\Theta) = \underset{\Theta}{\arg \max} \, \ln P_X(D;\Theta).
+    \]
+    Consider the Gaussian example: 
+    
+    Given a sample $\mathcal{D} = \{x_1, \dots , x_n\}$ of independent points, where $P_X(x_i) = \frac{1}{\sqrt{(2\pi)^d|\Sigma|}}e^{-\frac{1}{2}(x_i - \mu)^T\Sigma^{-1}(x_i - \mu)}$.
+
+    Then, the likelihood $L(x_1, \dots, x_n|\mu, \sigma) = \prod_{i = 1}^n P_X(x_i)$.
+    We take the gradient of the natrual log of $L$ with respect to $\mu$ and get
+    \begin{align*}
+        \nabla_{\mu} (\ln L) 
+        &= \nabla_{\mu} \left(-\frac{1}{2}\ln[(2\pi)^d|\Sigma|] - \frac{1}{2} \sum_{i = 1}^n (x_i - \mu)^T\Sigma^{-1}(x_i - \mu)\right) \\
+        &= \sum_{i = 1}^n \Sigma^{-1}(x_i - \mu) = \sum_{i = 1}^n x_i - \sum_{i = 1}^n \mu  = 0.
+    \end{align*}
+    Thus, we get $\hat{\mu} = \frac{1}{n}\sum_{i = 1}^n x_i$. 
+    By taking the Hessian, we get $\nabla_{\mu}^2(\ln L) = -\sum_{i = 1}^n \Sigma^{-1} = -n\Sigma^{-1}$.
+    Since the covariance matrix $\Sigma$ is positive definite, $-n\Sigma^{-1}$ is negative definite. Thus $\hat{\mu}$ is the maximum point.
+
+    In addition the MLE of the covariance matrix is
+    \[
+        \hat{\Sigma} = \frac{1}{n}\sum_{i = 1}^n (x_i - \mu)(x_i - \mu)^T.
+    \]
+\end{topic}
+
+\begin{topic}{Bias and Variance}
+    \begin{gather*}
+        Bias(\hat{\theta}) = E[\hat{\theta} - \theta] \quad Var(\hat{\theta}) = E\left\{(\hat{\theta} - E[\hat{\theta}])^2\right\} \\
+        MSE(\hat{\theta}) = E\left[(\hat{\theta} - \theta)^2\right] = Var(\hat{\theta}) + Bias^2(\hat{\theta}).
+    \end{gather*}
+\end{topic}
+
+\begin{topic}{Least Squares}
+    Consider a overdetermined system $\Phi\theta = z$, where we attempt to minimize $\lVert z - \Phi\theta \rVert$, the least square solution is
+    \[
+        \theta^* = (\Phi^T\Phi)^{-1}\Phi^Tz
+    \]
+    For a overdetermined system $W\Phi\theta = Wz$, where we attempt to minimize $(z - \Phi\theta)^TW^TW(z - \Phi\theta)$, the least square solution is
+    \[
+        \theta^* = (\Phi^TW^TW\Phi)^{-1}\Phi^TW^TWz.
+    \]
+\end{topic}
+
+ 
+\end{document}

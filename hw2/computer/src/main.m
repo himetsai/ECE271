@@ -61,6 +61,9 @@ for k = 1:64
     title("X_{" + k + "}");
 end
 
+best8 = [1 25 27 32 33 45 46 48];
+worst8 = [2 3 4 59 60 62 63 64];
+
 figure;
 for i = 1:8
     subplot(2, 4, i);
@@ -96,9 +99,6 @@ for i = 1:8
     plot(x, p_FG, 'LineWidth', 2);
     title("X_{" + k + "}");
 end
-
-best8 = [1 25 27 32 33 45 46 48];
-worst8 = [2 3 4 59 60 62 63 64];
 
 E = zeros(8, 64);
 
@@ -153,13 +153,13 @@ end
 figure;
 
 subplot(1, 3, 1);
-imagesc(mask);
+imagesc(target);
 axis off
 colormap(gray(255));
 axis equal tight;
 
 subplot(1, 3, 2);
-imagesc(A_64);
+imagesc(mask);
 axis off
 colormap(gray(255));
 axis equal tight;

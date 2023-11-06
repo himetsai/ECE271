@@ -366,7 +366,7 @@
     0 & 0.4082 & 0.2673 \\
   \end{pmatrix}$. Then $A_w^T\Sigma A_w = \Lambda^{-\frac{1}{2}}\Phi^T\Phi\Lambda\Phi^T\Phi\Lambda^{-\frac{1}{2}} = I$.
 
-  Thus, $y = A_wz = A_w^T(x - \mu)$ is the normalization tranformation we are looking for. \\
+  Thus, $y = A_w^Tz = A_w^T(x - \mu)$ is the normalization tranformation we are looking for. \\
 
   \part{C}
 
@@ -493,9 +493,9 @@
       &= \underset{\omega_j}{\arg\max} \, \ln (\underset{i}\Pi{P_{X_i|Y}(x_i|\omega_j)}) + \ln P(\omega_j) \\
       &= \underset{\omega_j}{\arg\max} \, \ln (\underset{i}\Pi{p_{ij}^{x_i}(1 - p_{ij})^{1 - x_i}}) + \ln P(\omega_j) \\
       &= \underset{\omega_j}{\arg\max} \, \underset{i}\sum \ln ({p_{ij}^{x_i}(1 - p_{ij})^{1 - x_i}}) + \ln P(\omega_j) \\
-      &= \underset{\omega_j}{\arg\max} \, \underset{i}\sum (x_i\ln (p_{ij}) - (1 - x_i)\ln (1 - p_{ij})) + \ln P(\omega_j) \\
-      &= \underset{\omega_j}{\arg\max} \, \underset{i}\sum \left(x_i\ln \left(\frac{p_{ij}}{1 - p_{ij}}\right) - \ln (1 - p_{ij})\right) + \ln P(\omega_j) \\
-      &= \underset{\omega_j}{\arg\max} \, \underset{i}\sum x_i\ln \left(\frac{p_{ij}}{1 - p_{ij}}\right) \sum_i \ln (1 - p_{ij}) + \ln P(\omega_j).
+      &= \underset{\omega_j}{\arg\max} \, \underset{i}\sum (x_i\ln (p_{ij}) + (1 - x_i)\ln (1 - p_{ij})) + \ln P(\omega_j) \\
+      &= \underset{\omega_j}{\arg\max} \, \underset{i}\sum \left(x_i\ln \left(\frac{p_{ij}}{1 - p_{ij}}\right) + \ln (1 - p_{ij})\right) + \ln P(\omega_j) \\
+      &= \underset{\omega_j}{\arg\max} \, \underset{i}\sum x_i\ln \left(\frac{p_{ij}}{1 - p_{ij}}\right) + \sum_i \ln (1 - p_{ij}) + \ln P(\omega_j).
     \end{align*}
   \end{enumerate}
 \end{homeworkProblem}

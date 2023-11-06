@@ -1,0 +1,313 @@
+\documentclass{article}
+
+\usepackage{fancyhdr}
+\usepackage{extramarks}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{tikz}
+\usepackage[plain]{algorithm}
+\usepackage{algpseudocode}
+\usepackage{pgfplots}
+\usepackage{mathtools}
+
+\usetikzlibrary{automata,positioning}
+
+%
+% Basic Document Settings
+%
+
+\topmargin=-0.45in
+\evensidemargin=0in
+\oddsidemargin=0in
+\textwidth=6.5in
+\textheight=9.0in
+\headsep=0.25in
+
+\linespread{1.1}
+
+\pagestyle{fancy}
+\lhead{\hmwkAuthorName}
+\chead{\hmwkClass:\ \hmwkTitle}
+\rhead{\firstxmark}
+\lfoot{\lastxmark}
+\cfoot{\thepage}
+
+\renewcommand\headrulewidth{0.4pt}
+\renewcommand\footrulewidth{0.4pt}
+
+\setlength\parindent{0pt}
+\setlength{\parskip}{5pt}
+
+%
+% Create Problem Sections
+%
+
+\newcommand{\enterProblemHeader}[1]{
+    \nobreak\extramarks{}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+}
+
+\newcommand{\exitProblemHeader}[1]{
+    \nobreak\extramarks{Problem \arabic{#1} (continued)}{Problem \arabic{#1} continued on next page\ldots}\nobreak{}
+    \stepcounter{#1}
+    \nobreak\extramarks{Problem \arabic{#1}}{}\nobreak{}
+}
+
+\setcounter{secnumdepth}{0}
+\newcounter{partCounter}
+\newcounter{homeworkProblemCounter}
+\setcounter{homeworkProblemCounter}{1}
+\nobreak\extramarks{Problem \arabic{homeworkProblemCounter}}{}\nobreak{}
+
+%
+% Homework Problem Environment
+%
+% This environment takes an optional argument. When given, it will adjust the
+% problem counter. This is useful for when the problems given for your
+% assignment aren't sequential. See the last 3 problems of this template for an
+% example.
+%
+\newenvironment{homeworkProblem}[1][-1]{
+    \ifnum#1>0
+        \setcounter{homeworkProblemCounter}{#1}
+    \fi
+    \section{Problem \arabic{homeworkProblemCounter}}
+    \setcounter{partCounter}{1}
+    \enterProblemHeader{homeworkProblemCounter}
+}{
+    \exitProblemHeader{homeworkProblemCounter}
+}
+
+%
+% Homework Details
+%   - Title
+%   - Due date
+%   - Class
+%   - Section/Time
+%   - Instructor
+%   - Author
+%
+
+\newcommand{\hmwkTitle}{Homework\ \#3}
+\newcommand{\hmwkDueDate}{November 13, 2023}
+\newcommand{\hmwkClass}{ECE 271A}
+\newcommand{\hmwkClassInstructor}{Professor Vasconcelos}
+\newcommand{\hmwkAuthorName}{\textbf{Ray Tsai}}
+\newcommand{\hmwkPID}{A16848188}
+
+%
+% Title Page
+%
+
+\title{
+  \vspace{2in}
+  \textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\
+  \normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate\ at 11:59pm}\\
+  \vspace{0.1in}\large{\textit{\hmwkClassInstructor}} \\
+  \vspace{3in}
+}
+
+\author{
+  \hmwkAuthorName \\
+  \vspace{0.1in}\small\hmwkPID
+}
+\date{}
+
+\renewcommand{\part}[1]{\textbf{\large Part \Alph{partCounter}}\stepcounter{partCounter}\\}
+
+%
+% Various Helper Commands
+%
+
+% Useful for algorithms
+\newcommand{\alg}[1]{\textsc{\bfseries \footnotesize #1}}
+
+% For derivatives
+\newcommand{\deriv}[1]{\frac{\mathrm{d}}{\mathrm{d}x} (#1)}
+
+% For partial derivatives
+\newcommand{\pderiv}[2]{\frac{\partial}{\partial #1} (#2)}
+
+% Integral dx
+\newcommand{\dx}{\mathrm{d}x}
+
+% Probability commands: Expectation, Variance, Covariance, Bias
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Bias}{\mathrm{Bias}}
+\newcommand*{\Z}{\mathbb{Z}}
+\newcommand*{\Q}{\mathbb{Q}}
+\newcommand*{\R}{\mathbb{R}}
+\newcommand*{\C}{\mathbb{C}}
+\newcommand*{\N}{\mathbb{N}}
+\newcommand*{\prob}{\mathds{P}}
+\newcommand*{\E}{\mathds{E}}
+
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\begin{document}
+
+\maketitle
+
+\pagebreak
+
+\begin{homeworkProblem}
+  In this problem we will consider the issue of linear regression and the connections between maximum
+  likelihood and least squares solutions. Consider a problem where we have two random variables $Z$ and
+  $X$, such that
+  \begin{gather}
+    z = f(x, \theta) + \epsilon
+  \end{gather}
+  where $f$ is a polynomial with parameter vector $\theta$
+  \[
+    f(x, \theta) = \sum^K_{k = 0} \theta_kx^k
+  \]
+  and $\epsilon$ a Gaussian random variable of zero mean and variance $\sigma^2$.
+  Our goal is to estimate the best estimate of the function given i.i.d. sample $\mathcal{D} = \{(\mathcal{D}_x, \mathcal{D}_z)\} = \{(x_1, z_1), \dots , (x_n, z_n)\}$.
+  \\
+
+  \part{A}
+
+  Formulate the problem as one of least squares, i.e define $z = (z_1, \dots, z_n)^T$,
+  \[
+    \Phi = \begin{bmatrix}
+      1 & \dots & x^K_1 \\
+      \vdots & \ddots & \vdots \\
+      1 & \dots & x^K_n \\
+    \end{bmatrix}
+  \]
+  and find the value of $\theta$ that minimizes 
+  \[
+    \norm{z - \Phi\theta}^2.
+  \]
+
+  \textbf{Solution}
+
+  % $$\theta = \left(\Phi^T\Phi\right)^{-1}\Phi z^T.$$
+
+  We attempt to find $\theta$, such that it gives a closest solution to
+  \[
+    \Phi\theta = z.
+  \]
+  By performing least squares, we get
+  \[
+    \theta = (\Phi^T\Phi)^{-1}\Phi^Tz.
+  \]
+  
+  \part{B}
+
+  Formulate the problem as one of ML estimation, i.e. write down the likelihood function $P_{Z|X}(z|x; \theta)$,
+  and compute the ML estimate, i.e. the value of $\theta$ that maximizes $P_{Z|X}(\mathcal{D}_z|\mathcal{D}_x; \theta)$. Show that this is
+  equivalent to part A.
+  \\
+
+  \textbf{Solution}
+
+  Suppose that $X$ is known. 
+  Then, $P_{Z|X}(z|x; \theta)$ become a Gaussian distribution with mean $f(x, \theta)$ and variance $\sigma^2$, namely
+  \[
+    P_{Z|X}(z|x;\theta) = G(x, f(x, \theta), \sigma^2).
+  \]
+  Given sampple $\mathcal{D}$, we take the natural log of $P_{Z|X}(\mathcal{D}_z|\mathcal{D}_x;\theta)$ and get
+  \begin{align*}
+    \theta^* 
+    &= \underset{\theta}{\arg \max} \, \sum_{i = 1}^n -\frac{(z_i - f(x_i, \theta))^2}{2\sigma^2} - \frac{1}{2}\ln (2\pi\sigma^2) \\
+    &= \underset{\theta}{\arg \min} \, \sum_{i = 1}^n (z_i - f(x_i, \theta))^2 \\
+    &= \underset{\theta}{\arg \min} \, \norm{z - \Phi\theta}^2,
+  \end{align*}
+  and what we're looking for is obviously identical to the question in part A.
+  \\
+  % \begin{align*}
+  %   P_{Z|X}(D_z|D_x;\theta) & = \prod_{j=1}^{n}\sum^K_{k = 0} \theta_kx^k \\
+  %   \log P_{Z|X}(D_z|D_x;\theta) & = \sum_{j=1}^{n}\log\sum^K_{k = 0} \theta_kx^k \\
+  %   P'_{Z|X}(D_z|D_x;\theta) & = \left(\sum_{j=1}^{n}\sum^K_{k = 0} \theta_kx^k\right)\times \prod_{j=1}^{n}\sum^K_{k = 0} \theta_kx^k
+  % \end{align*}
+
+  \part{C}
+
+  (The advantage of the statistical formulation is that makes the assumptions explicit. We will now
+  challenge some of these.) Assume that instead of a fixed variance $\sigma^2$ we now have a variance that
+  depends on the sample point, i.e.
+  \[
+    z_i = f(x_i, \theta) + \epsilon_i,
+  \]
+  where $\epsilon_i \sim N(0, \sigma_i^2)$. 
+  This means that our sample is independent but no longer identically distributed.
+  It also means that we have different degrees of confidence in the different measurements $(z_i, x_i)$. 
+  Redo part B under these conditions.
+  \\
+
+  \textbf{Solution}
+
+  Instead of looking at individual data points, we view $\mathcal{D}_z$ and $\mathcal{D}_x$ as random vectors.
+  Thus, the probablity distribution becomes a Gaussian distribution with mean $\Phi\theta$ and variance $\Sigma = \text{diag}(\sigma^2_1, \dots, \sigma^2_n)$, namely
+  \[
+    P_{Z|X} (z|\mathcal{D}_x;\theta) = \frac{1}{\sqrt{(2\pi)^n|\Sigma|}}\exp -\frac{1}{2}(z - \Phi\theta)^T\Sigma^{-1}(z - \Phi\theta).
+  \]
+  We again do the log trick and get
+  \begin{align*}
+    \theta^* 
+    &= \underset{\theta}{\arg \max} \, \ln \left(\frac{1}{\sqrt{(2\pi)^n|\Sigma|}}\right) - \frac{1}{2}(z - \Phi\theta)^T\Sigma^{-1}(z - \Phi\theta) \\
+    &= \underset{\theta}{\arg \min} \, (z - \Phi\theta)^T\Sigma^{-1}(z - \Phi\theta).
+  \end{align*}
+  Let $g(\theta) = (z - \Phi\theta)^T\Sigma^{-1}(z - \Phi\theta)$. 
+  We take the gradient of $g$ with respect to $\theta$ and get
+  \[
+    \nabla_{\theta} g = -2\Phi^T\Sigma^{-1}(z - \Phi\theta) = 0.
+  \]
+  Thus, we get a critical point $\theta^* = (\Phi^T\Sigma^{-1}\Phi)^{-1}\Phi^T\Sigma^{-1}z$. We take the Hessian of $g$ and get that
+  \[
+    \nabla^2_{\theta} g = 2\Phi^T\Sigma^{-1}\Phi = 2(S\Phi)^T(S\Phi),
+  \]
+  where $S = diag(\sigma_1^{-1}, \dots, \sigma_n^{-1})$. Since $\nabla^2_{\theta} g$ can be decomposed into a product of a matrix and its transpose, it is positive definite, and so $\theta^*$ is the minimum point.
+  
+  \pagebreak
+
+  \part{D}
+
+  Consider the weighted least squares problem where the goal is to minimize
+  \[
+    (z - \Phi\theta)^TW(z - \Phi\theta),
+  \]
+  where $W$ is a symmetrix matrix. Compute the optimal $\theta$ in this situation. 
+  What is the equivalent maximum likelihood problem? 
+  Rewrite the model $(1)$, making explicit all the assumptions that lead to the new problem. What is the statistical interpretation of $W$?
+  \\
+
+  \textbf{Solution}
+
+  By part C, we know the least square solution to this problem is
+  \[
+    \theta^* = (\Phi^TW\Phi)^{-1}\Phi^TWz.
+  \]
+  We can thus assume that $W = \Sigma^{-1}$ is the inverse of the covariance matrix, such that the random noise vector $\epsilon = (\epsilon_1, \dots, \epsilon_n)^T \sim N(0, \Sigma)$.
+  Thus, (1) can be rewritten into 
+  \[
+    z = \Phi\theta + \epsilon,
+  \]
+  where $z = (z_1, \dots ,z_n)^T$.
+  \\
+
+  \part{E}
+  
+  The $L_2$ norm is known to be prone to large estimation error if there are outliers in the training sample.
+  These are training examples $(z_i, x_i)$ for which, due to measurement errors or other extraneous causes,
+  $|z_i - \sum_k \theta_ix_i^k|$ is much larger than for the remaining examples (the \textit{inliers}). 
+  In fact, it is known that a single outlier can completely derail the least squares solution, an highly undesirable behavior. 
+  It is also well known that other norms lead to much more robust estimators. 
+  One of such distance metrics is the $L_1$-norm
+  \[
+    L_1 = \sum_i \left|z_i - \sum_k \theta_kx_i^k\right|.
+  \]
+  In the maximum likelihood framework, which is the statistical assumption that leads to the $L_1$ norm?
+  Once again, rewrite the model (1), making explicit all the assumptions that lead to the new problem.
+  Can you justify why this alternative formulation is more robust? In particular, provide a justification for i) why the $L_1$ norm is more robust to outliers, and ii) the associated statistical model (1) copes better with them.
+  \\
+
+  \textbf{Solution}
+
+  
+\end{homeworkProblem}
+
+\end{document}
