@@ -63,8 +63,8 @@
 
 
 \newcommand{\hmwkInstitution}{University of California San Diego}
-\newcommand{\hmwkTitle}{\textsc{ECE 271A Midterm Reference Sheet}}
-\newcommand{\hmwkHeader}{Midterm Reference Sheet}
+\newcommand{\hmwkTitle}{\textsc{ECE 271 Notes}}
+\newcommand{\hmwkHeader}{Statistical Learning Notes}
 \newcommand{\hmwkInstructor}{Prof. Nuno Vasconcelos}
 \newcommand{\hmwkAuthorName}{Ray Tsai}
 
@@ -140,7 +140,7 @@
         &= \underset{g(x)}{\arg \min} \, \sum_i P_{Y|X}(i|x)L[g(x), i] \\
         &= \underset{i}{\arg \max} \, P_{Y|X}(i|x) && \text{(for 0-1 loss function)} \\
         &= \underset{i}{\arg \max} \, P_{X|Y}(x|i)P_Y(i) && \text{(for 0-1 loss function)} \\
-        &= \underset{i}{\arg \max} \, \ln P_{X|Y}(x|i) + \ln P_Y(i). && \text{(for 0-1 loss function)}
+        &= \underset{i}{\arg \max} \, \log P_{X|Y}(x|i) + \log P_Y(i). && \text{(for 0-1 loss function)}
     \end{align*}
     
     For binary classification, the likelihood ratio form is: pick $0$ if $\frac{P_{X|Y}(x|0)}{P_{X|Y}(x|1)} > T^* = \frac{P_Y(1)}{P_X(0)}$.
@@ -155,19 +155,19 @@
 \begin{topic}{Gaussian Classifier}
     For single variable, we assume $\sigma_i = \sigma$ and pick 0 if
     \[
-        x < \frac{\mu_1 + \mu_0}{2} + \frac{1}{\frac{\mu_1 - \mu_0}{\sigma^2}}\ln \frac{P_Y(0)}{P_Y(1)}.
+        x < \frac{\mu_1 + \mu_0}{2} + \frac{1}{\frac{\mu_1 - \mu_0}{\sigma^2}}\log \frac{P_Y(0)}{P_Y(1)}.
     \]
     Generalizing it to multiple variables, we assume $\Sigma_i = \Sigma$, then the BDR becomes
     \[
         i^*(x) = \underset{i}{\arg \min}[d(x, \mu_i) + \alpha_i],
     \]
-    where $d(x, y) = (x - y)^T\Sigma^{-1}(x - y)$ and $\alpha_i = \cancel{\left[(2\pi)^d|\Sigma|\right]} - 2\ln P_Y(i)$.
+    where $d(x, y) = (x - y)^T\Sigma^{-1}(x - y)$ and $\alpha_i = \cancel{\log\left[(2\pi)^d|\Sigma|\right]} - 2\log P_Y(i)$.
 
     Alternatively,
     \[
         i^*(x) = \underset{i}{\arg \max} \, g_i(x),
     \]
-    where $g_i(x) = w_i^Tx + w_{i0}$, $w_i = \Sigma^{-1}\mu_i$, and $w_{i0} = -\frac{1}{2}\mu_i^T\Sigma^{-1}\mu_i + \ln P_Y(i)$.
+    where $g_i(x) = w_i^Tx + w_{i0}$, $w_i = \Sigma^{-1}\mu_i$, and $w_{i0} = -\frac{1}{2}\mu_i^T\Sigma^{-1}\mu_i + \log P_Y(i)$.
 \end{topic}
 
 \begin{topic}{Geometric Interpretation}
@@ -175,13 +175,13 @@
     \[
         g_0(x) - g_1(x) = w^Tx + b = 0,
     \]
-    where $w = \Sigma^{-1}(\mu_0 - \mu_1)$ and $b = -\frac{(\mu_0 + \mu_1)^T\Sigma^{-1}(\mu_0 - \mu_1)}{2} + \ln \frac{P_Y(0)}{P_Y(1)}$.
+    where $w = \Sigma^{-1}(\mu_0 - \mu_1)$ and $b = -\frac{(\mu_0 + \mu_1)^T\Sigma^{-1}(\mu_0 - \mu_1)}{2} + \log \frac{P_Y(0)}{P_Y(1)}$.
 
     It could also be rewritten as
     \[
         w^T(x - x_0) = 0,
     \]
-    where $w = \Sigma^{-1}(\mu_0 - \mu_1)$ and $x_0 = \frac{\mu_0 + \mu_1}{2} - \frac{1}{(\mu_0 - \mu_1)^T\Sigma^{-1}(\mu_0 - \mu_1)} \ln \frac{P_Y(0)}{P_Y(1)}(\mu_0 - \mu_1)$
+    where $w = \Sigma^{-1}(\mu_0 - \mu_1)$ and $x_0 = \frac{\mu_0 + \mu_1}{2} - \frac{1}{(\mu_0 - \mu_1)^T\Sigma^{-1}(\mu_0 - \mu_1)} \log \frac{P_Y(0)}{P_Y(1)}(\mu_0 - \mu_1)$
 \end{topic}
 
 \begin{topic}{Gaussian Distribution Transformation}
@@ -193,13 +193,13 @@
     \[
         g_0(x) = \frac{1}{1 + \frac{P_{X|Y}(x|1)P_Y(1)}{P_{X|Y}(x|0)P_Y(0)}} = \frac{1}{1 + \exp\{d_0(x, \mu_0) - d_1(x, \mu_1) + \alpha_0 - \alpha_1\}},
     \]
-    where, $d(x, y) = (x - y)^T\Sigma^{-1}(x - y)$ and $\alpha_i = \ln \left[(2\pi)^d|\Sigma_i|\right] - 2\ln P_Y(i)$.
+    where, $d(x, y) = (x - y)^T\Sigma^{-1}(x - y)$ and $\alpha_i = \log \left[(2\pi)^d|\Sigma_i|\right] - 2\log P_Y(i)$.
 \end{topic}
 
 \begin{topic}{Maximum Likelihood Estimation}
     Solve for
     \[
-        \Theta^* = \underset{\Theta}{\arg \max} \, P_X(D;\Theta) = \underset{\Theta}{\arg \max} \, \ln P_X(D;\Theta).
+        \Theta^* = \underset{\Theta}{\arg \max} \, P_X(D;\Theta) = \underset{\Theta}{\arg \max} \, \log P_X(D;\Theta).
     \]
     Consider the Gaussian example: 
     
@@ -208,15 +208,15 @@
     Then, the likelihood $L(x_1, \dots, x_n|\mu, \sigma) = \prod_{i = 1}^n P_X(x_i)$.
     We take the gradient of the natrual log of $L$ with respect to $\mu$ and get
     \begin{align*}
-        \nabla_{\mu} (\ln L) 
-        &= \nabla_{\mu} \left(-\frac{1}{2}\ln[(2\pi)^d|\Sigma|] - \frac{1}{2} \sum_{i = 1}^n (x_i - \mu)^T\Sigma^{-1}(x_i - \mu)\right) \\
+        \nabla_{\mu} (\log L) 
+        &= \nabla_{\mu} \left(-\frac{1}{2}\log[(2\pi)^d|\Sigma|] - \frac{1}{2} \sum_{i = 1}^n (x_i - \mu)^T\Sigma^{-1}(x_i - \mu)\right) \\
         &= \sum_{i = 1}^n \Sigma^{-1}(x_i - \mu) = \sum_{i = 1}^n x_i - \sum_{i = 1}^n \mu  = 0.
     \end{align*}
     Thus, we get $\hat{\mu} = \frac{1}{n}\sum_{i = 1}^n x_i$. 
-    By taking the Hessian, we get $\nabla_{\mu}^2(\ln L) = -\sum_{i = 1}^n \Sigma^{-1} = -n\Sigma^{-1}$.
+    By taking the Hessian, we get $\nabla_{\mu}^2(\log L) = -\sum_{i = 1}^n \Sigma^{-1} = -n\Sigma^{-1}$.
     Since the covariance matrix $\Sigma$ is positive definite, $-n\Sigma^{-1}$ is negative definite. Thus $\hat{\mu}$ is the maximum point.
 
-    In addition the MLE of the covariance matrix is
+    In addition, the MLE of the covariance matrix is
     \[
         \hat{\Sigma} = \frac{1}{n}\sum_{i = 1}^n (x_i - \mu)(x_i - \mu)^T.
     \]
@@ -224,7 +224,7 @@
 
 \begin{topic}{Bias and Variance}
     \begin{gather*}
-        Bias(\hat{\theta}) = E[\hat{\theta} - \theta] \quad Var(\hat{\theta}) = E\left\{(\hat{\theta} - E[\hat{\theta}])^2\right\} \\
+        Bias(\hat{\theta}) = E[\hat{\theta} - \theta], \quad Var(\hat{\theta}) = E\left\{(\hat{\theta} - E[\hat{\theta}])^2\right\}, \\
         MSE(\hat{\theta}) = E\left[(\hat{\theta} - \theta)^2\right] = Var(\hat{\theta}) + Bias^2(\hat{\theta}).
     \end{gather*}
 \end{topic}
@@ -239,6 +239,4 @@
         \theta^* = (\Phi^TW^TW\Phi)^{-1}\Phi^TW^TWz.
     \]
 \end{topic}
-
- 
 \end{document}
