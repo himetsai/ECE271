@@ -22,44 +22,25 @@ prior_FG = row_FG / (row_BG + row_FG);
 % pick cheetah if (p(x | grass) / p(x | cheetah)) < threshold
 threshold = prior_FG / prior_BG;
 
-mean_FG = zeros(1, 64);
-mean_BG = zeros(1, 64);
+mean_FG = sum(training_FG, 1) / row_FG;
+mean_BG = sum(training_BG, 1) / row_BG;
 
-cov_FG = zeros(64, 64);
-cov_BG = zeros(64, 64);
-
-for r = 1:row_FG
-    cov_FG = cov_FG + training_FG(r,:)' * training_FG(r,:);
-    mean_FG = mean_FG + training_FG(r,:);
-end
-
-for r = 1:row_BG
-    cov_BG = cov_BG + training_BG(r,:)' * training_BG(r,:);
-    mean_BG = mean_BG + training_BG(r,:);
-end
-
-mean_FG = mean_FG / row_FG;
-mean_BG = mean_BG / row_BG;
-
-cov_FG = (cov_FG / row_FG) - mean_FG' * mean_FG;
-cov_BG = (cov_BG / row_BG) - mean_BG' * mean_BG;
+dimensions = [1 2 4 8 16 32 40 48 56 64];
 
 C = 8;
 
-pi_FG = rand(1, C);
-pi_FG = pi_FG / sum(pi_FG);
+error_rates = zeros(5, 5, 10);
+
+for b=1:5
 
 pi_BG = rand(1, C) + 1;
 pi_BG = pi_BG / sum(pi_BG);
 
-mu_FG = rand(64, C);
 mu_BG = rand(64, C);
 for c=1:C
-    mu_FG(:, c) = mu_FG(:, c) + mean_FG';
     mu_BG(:, c) = mu_BG(:, c) + mean_BG';
 end
 
-sigma_FG = 1 + rand(64, C);
 sigma_BG = 1 + rand(64, C);
 
 for itr=1:epoch
@@ -89,6 +70,20 @@ for itr=1:epoch
     end
 end
 
+disp("Finished EM for BG " + b);
+
+for f=1:5
+
+pi_FG = rand(1, C) + 1;
+pi_FG = pi_FG / sum(pi_FG);
+
+mu_FG = rand(64, C);
+for c=1:C
+    mu_FG(:, c) = mu_FG(:, c) + mean_FG';
+end
+
+sigma_FG = 1 + rand(64, C);
+
 for itr=1:epoch
     h_FG = zeros(row_FG, C);
     for i=1:row_FG
@@ -116,15 +111,25 @@ for itr=1:epoch
     end
 end
 
-sq_sigma_FG = zeros(64, 64, C);
-sq_sigma_BG = zeros(64, 64, C);
+disp("Finished EM for FG " + f);
+
+count = 0;
+
+for d=dimensions
+count = count + 1;
+
+sq_sigma_BG = zeros(d, d, C);
 for i = 1:C
-    sq_sigma_FG(:, :, i) = diag(sigma_FG(:, i));
-    sq_sigma_BG(:, :, i) = diag(sigma_BG(:, i));
+    sq_sigma_BG(:, :, i) = diag(sigma_BG(1:d, i));
 end
 
-gm_FG = gmdistribution(mu_FG', sq_sigma_FG, pi_FG);
-gm_BG = gmdistribution(mu_BG', sq_sigma_BG, pi_BG);
+sq_sigma_FG = zeros(d, d, C);
+for i = 1:C
+    sq_sigma_FG(:, :, i) = diag(sigma_FG(1:d, i));
+end
+
+gm_BG = gmdistribution(mu_BG(1:d, :)', sq_sigma_BG, pi_BG);
+gm_FG = gmdistribution(mu_FG(1:d, :)', sq_sigma_FG, pi_FG);
 
 A = zeros(row_TG, col_TG);
 
@@ -138,30 +143,9 @@ for r = 5:row_TG-3
                 X(zigzag(i, j)) = dctBlock(i, j);
             end
         end
-        A(r, c) = int8(pdf(gm_BG, X)/ ...
-            pdf(gm_FG, X) <= threshold);
+        A(r, c) = int8(pdf(gm_BG, X(1:d)) / pdf(gm_FG, X(1:d)) <= threshold);
     end
 end
-
-figure;
-
-subplot(1, 3, 1);
-imagesc(target);
-axis off
-colormap(gray(255));
-axis equal tight;
-
-subplot(1, 3, 2);
-imagesc(mask);
-axis off
-colormap(gray(255));
-axis equal tight;
-
-subplot(1, 3, 3);
-imagesc(A);
-axis off
-colormap(gray(255));
-axis equal tight;
 
 error = 0;
 for r = 1:row_TG
@@ -173,4 +157,26 @@ for r = 1:row_TG
 end
 
 error_rate = error / (row_TG * col_TG);
-disp(error_rate);
+
+disp("Finished inference for BG " + b + ", FG " + f + ", dim " + d + ", error rate is " + error_rate);
+
+error_rates(b, f, count) = error_rate;
+
+end
+end
+end
+
+figure;
+
+for b=1:5
+    subplot(3, 2, b);
+    for f=1:5
+        plot(dimensions, squeeze(error_rates(b, f, :)));
+        hold on;
+    end
+
+    title("Background: " + b, 'Interpreter', 'latex');
+    
+    xlabel("Dimension", 'Interpreter', 'latex');
+    ylabel("Probability of Error", 'Interpreter', 'latex');
+end
