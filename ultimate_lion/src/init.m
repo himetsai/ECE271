@@ -17,11 +17,11 @@ function [p, mu, sigma] = init(dataset, C)
             temp_mu(:, 2 * i) = mu(:, i) .* 1.01;
         end
         mu = temp_mu;
-        
-        count = count * 2;
         T = zeros(row, C);
+        count = count * 2;
         
         for itr=1:epoch
+            T = zeros(row, C);
             for i=1:row
                 closest = 1;
                 for j=1:count

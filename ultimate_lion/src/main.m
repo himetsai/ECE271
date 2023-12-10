@@ -108,21 +108,19 @@ imagesc(target);
 axis off
 colormap(gray(255));
 axis equal tight;
-title("Original", 'Interpreter', 'latex');
+title("Original", 'Interpreter', 'latex', 'FontSize', 20);
 
 subplot(1, 3, 2);
 imagesc(mask);
 axis off
 colormap(gray(255));
 axis equal tight;
-title("Truth", 'Interpreter', 'latex');
+title("Truth", 'Interpreter', 'latex', 'FontSize', 20);
 
 subplot(1, 3, 3);
 imagesc(A);
 axis off
 colormap(gray(255));
 axis equal tight;
-title("Prediction", 'Interpreter', 'latex');
-text(0.5, -0.1, 'Probability of Error: ' + error_rate * 100 + "\%", ...
-    'Units', 'normalized', 'HorizontalAlignment', 'center', ...
-    'Interpreter', 'latex', 'FontSize', 8);
+title("Prediction (error rate: " + round(error_rate * 100, 2) + "\%)", ...
+    'Interpreter', 'latex', 'FontSize', 20);
